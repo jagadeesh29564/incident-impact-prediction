@@ -100,6 +100,25 @@
           Impact results come from a small demonstration model. Treat them as a learning aid,
           not as production incident decisions.
         </div>
+        <section class="panel" aria-labelledby="about-heading">
+        <h2 id="about-heading">About this project</h2>
+        <p>
+          This learning project combines incident management with a small machine-learning
+          model. Users can record a service or application issue, describe what happened,
+          and choose its severity.
+        </p>
+        <p>
+          When an incident is submitted, the application saves it and sends its description
+          to a text-classification model. The model uses TF-IDF to turn text into features
+          and Multinomial Naive Bayes to estimate whether the incident may be impactful.
+          The dashboard displays the result and the model's estimated impact probability.
+        </p>
+        <p>
+          This model is trained on a small synthetic dataset, so its predictions are only
+          for learning and demonstration. They should not be used to make real production
+          decisions. If prediction is unavailable, the incident is still saved for handling.
+        </p>
+      </section>
         <section class="panel" aria-labelledby="create-heading">
           <div class="panel-heading">
             <h2 id="create-heading">Create an incident</h2>

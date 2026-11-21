@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Incident Management | Impact Desk</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: #172b4d;
+      background: #f4f6f9;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    button, input, select, textarea { font: inherit; }
+    .layout { min-height: 100vh; display: grid; grid-template-columns: 220px 1fr; }
+    aside { padding: 26px 18px; color: #e8efff; background: #102a43; }
+    .brand { margin: 0 0 36px; font-size: 19px; font-weight: 700; }
+    .brand span { color: #70d6c3; }
+    .nav-label { margin: 26px 10px 10px; color: #91a6c2; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .nav-item { display: block; padding: 11px 12px; border-radius: 6px; color: #d7e2f1; font-size: 14px; }
+    .nav-item.active { color: white; background: #234568; }
+    main { min-width: 0; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 17px 34px; border-bottom: 1px solid #e1e6ed; background: white; }
+    header p { margin: 0; color: #53657d; font-size: 13px; }
+    .user { color: #334e68; font-size: 13px; font-weight: 600; }
+    .content { width: min(1120px, 100%); margin: 0 auto; padding: 34px; }
+    .page-heading { margin-bottom: 24px; }
+    h1 { margin: 0 0 7px; color: #102a43; font-size: 27px; }
+    .page-heading p, .subheading { margin: 0; color: #62748a; font-size: 14px; line-height: 1.5; }
+    .notice { margin: 20px 0; padding: 12px 15px; border: 1px solid #cfe1f7; border-radius: 7px; color: #345b82; background: #edf5fd; font-size: 13px; line-height: 1.5; }
+    .panel { margin-top: 20px; padding: 23px; border: 1px solid #e1e6ed; border-radius: 9px; background: white; box-shadow: 0 2px 6px #102a4309; }
+    .panel-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    h2 { margin: 0; color: #102a43; font-size: 17px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; }
+    label { display: grid; gap: 7px; color: #34495e; font-size: 13px; font-weight: 600; }
+    .wide { grid-column: 1 / -1; }
+    input, select, textarea { width: 100%; padding: 10px 11px; border: 1px solid #cbd4df; border-radius: 5px; outline: none; color: #172b4d; background: white; }
+    input:focus, select:focus, textarea:focus { border-color: #1976d2; box-shadow: 0 0 0 3px #1976d21a; }
+    textarea { min-height: 105px; resize: vertical; }
+    .actions { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .primary { padding: 10px 16px; border: 0; border-radius: 5px; color: white; background: #1769aa; font-weight: 600; cursor: pointer; }
+    .primary:hover { background: #12588f; }
+    .primary:disabled { opacity: .65; cursor: wait; }
+    .message { color: #63758a; font-size: 13px; }
+    .error { color: #a4262c; }
+    .result { margin-top: 20px; padding: 16px; border: 1px solid #b9ddcf; border-radius: 7px; background: #f1faf6; }
+    .result.unavailable { border-color: #f0d39a; background: #fff9eb; }
+    .result-title { margin: 0 0 9px; font-weight: 700; }
+    .result p { margin: 5px 0; color: #43566c; font-size: 13px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid #e8edf2; font-size: 13px; vertical-align: top; }
+    th { color: #60738a; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+    td.description { min-width: 260px; max-width: 430px; line-height: 1.45; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 12px; color: #155e45; background: #dff4e9; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .badge.low { color: #43566c; background: #edf0f4; }
+    .badge.pending { color: #795b15; background: #fff0c2; }
+    .badge.unavailable { color: #8a4c08; background: #ffebcc; }
+    .empty { padding: 24px 10px; color: #718198; text-align: center; }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { padding: 14px 18px; }
+      .brand { margin: 0; }
+      .nav-label, .nav-item { display: none; }
+      header { padding: 14px 20px; }
+      .content { padding: 24px 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+      .panel { padding: 17px; }
+      .panel-heading { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside aria-label="Main navigation">
+      <p class="brand">Impact <span>Desk</span></p>
+      <p class="nav-label">Workspace</p>
+      <span class="nav-item active">Incidents</span>
+      <span class="nav-item">My Work</span>
+      <p class="nav-label">Operations</p>
+      <span class="nav-item">Services</span>
+      <span class="nav-item">Reports</span>
+    </aside>
+    <main>
+      <header>
+        <p>IT Service Management / Incidents</p>
+        <span class="user">Incident Operator</span>
+      </header>
+      <div class="content">
+        <section class="page-heading">
+          <h1>Incident Management</h1>
+          <p>Record service interruptions and review the model's impact assessment.</p>
+        </section>
+        <div class="notice">
+          Impact results come from a small demonstration model. Treat them as a learning aid,
+          not as production incident decisions.
+        </div>
+        <section class="panel" aria-labelledby="create-heading">
+          <div class="panel-heading">
+            <h2 id="create-heading">Create an incident</h2>
+            <span class="subheading">The impact prediction runs automatically after saving.</span>
+          </div>
+          <form id="incident-form">
+            <div class="form-grid">
+              <label>
+                Application / service
+                <input name="application" maxlength="120" placeholder="e.g. Payments API" required>
+              </label>
+              <label>
+                Severity
+                <select name="severity" required>
+                  <option value="Low">Low</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="High">High</option>
+                  <option value="Critical">Critical</option>
+                </select>
+              </label>
+              <label class="wide">
+                Incident description
+                <textarea name="description" minlength="5" maxlength="2000" placeholder="Describe what is failing and who or what is affected..." required></textarea>
+              </label>
+            </div>
+            <div class="actions">
+              <button class="primary" id="submit-button" type="submit">Save incident</button>
+              <span class="message" id="form-message" role="status"></span>
+            </div>
+          </form>
+          <div id="prediction-result" aria-live="polite"></div>
+        </section>
+        <section class="panel" aria-labelledby="list-heading">
+          <div class="panel-heading">
+            <h2 id="list-heading">Recent incidents</h2>
+            <span class="subheading" id="incident-count">Loading incidents...</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Incident</th>
+                  <th>Description</th>
+                  <th>Service</th>
+                  <th>Severity</th>
+                  <th>State</th>
+                  <th>ML impact</th>
+                </tr>
+              </thead>
+              <tbody id="incident-rows"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script>
+    const form = document.querySelector("#incident-form");
+    const submitButton = document.querySelector("#submit-button");
+    const formMessage = document.querySelector("#form-message");
+    const resultContainer = document.querySelector("#prediction-result");
+    const incidentRows = document.querySelector("#incident-rows");
+    const incidentCount = document.querySelector("#incident-count");
+
+    function addCell(row, value, className) {
+      const cell = document.createElement("td");
+      if (className) cell.className = className;
+      cell.textContent = value ?? "—";
+      row.append(cell);
+      return cell;
+    }
+
+    function renderIncident(incident) {
+      const row = document.createElement("tr");
+      addCell(row, incident.incident_id);
+      addCell(row, incident.description, "description");
+      addCell(row, incident.application);
+      addCell(row, incident.severity);
+      addCell(row, incident.state);
+      const impactCell = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      if (incident.prediction_status === "COMPLETED") {
+        badge.textContent = `${incident.predicted_impact} (${(incident.impact_probability * 100).toFixed(1)}%)`;
+        if (incident.predicted_impact === "Non-impactful") badge.classList.add("low");
+      } else if (incident.prediction_status === "PENDING") {
+        badge.textContent = "Prediction pending";
+        badge.classList.add("pending");
+      } else {
+        badge.textContent = "Prediction unavailable";
+        badge.classList.add("unavailable");
+      }
+      impactCell.append(badge);
+      row.append(impactCell);
+      return row;
+    }
+
+    async function refreshIncidents() {
+      const response = await fetch("/api/incidents");
+      if (!response.ok) throw new Error("Could not load incidents.");
+      const incidents = await response.json();
+      incidentRows.replaceChildren();
+      if (incidents.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 6;
+        cell.className = "empty";
+        cell.textContent = "No incidents have been created yet.";
+        row.append(cell);
+        incidentRows.append(row);
+      } else {
+        incidents.forEach((incident) => incidentRows.append(renderIncident(incident)));
+      }
+      incidentCount.textContent = `${incidents.length} incident${incidents.length === 1 ? "" : "s"}`;
+    }
+
+    function showPrediction(incident) {
+      const unavailable = incident.prediction_status !== "COMPLETED";
+      const panel = document.createElement("section");
+      panel.className = `result${unavailable ? " unavailable" : ""}`;
+      const title = document.createElement("p");
+      title.className = "result-title";
+      title.textContent = unavailable
+        ? `Incident ${incident.incident_id} saved; prediction unavailable`
+        : `Incident ${incident.incident_id} saved; prediction complete`;
+      panel.append(title);
+      const details = document.createElement("p");
+      details.textContent = unavailable
+        ? "The incident is recorded. You can continue handling it without an ML result."
+        : `Model output: ${incident.predicted_impact} · Impact probability: ${(incident.impact_probability * 100).toFixed(1)}%`;
+      panel.append(details);
+      resultContainer.replaceChildren(panel);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      submitButton.disabled = true;
+      formMessage.className = "message";
+      formMessage.textContent = "Saving incident and running prediction...";
+      resultContainer.replaceChildren();
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+      try {
+        const response = await fetch("/api/incidents", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.detail || "Could not create the incident.");
+        }
+        const incident = await response.json();
+        showPrediction(incident);
+        form.reset();
+        await refreshIncidents();
+        formMessage.textContent = "Incident saved.";
+      } catch (error) {
+        formMessage.className = "message error";
+        formMessage.textContent = error.message;
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+
+    refreshIncidents().catch((error) => {
+      incidentCount.textContent = error.message;
+    });
+  </script>
+</body>
+</html>
